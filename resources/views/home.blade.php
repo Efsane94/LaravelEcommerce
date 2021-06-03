@@ -1,51 +1,39 @@
 @extends("layouts.master")
 @section("title","Home")
 @section("content")
-
-
+    @include('layouts.Partials.alert')
     <div class="container">
         <div class="row">
             <div class="col-md-3">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Kategoriler</div>
+                    <div class="panel-heading">Categories</div>
                     <div class="list-group categories">
-                        <a href="#" class="list-group-item"><i class="fa fa-television"></i> Kategori</a>
-                        <a href="#" class="list-group-item"><i class="fa fa-television"></i> Kategori</a>
-                        <a href="#" class="list-group-item"><i class="fa fa-television"></i> Kategori</a>
-                        <a href="#" class="list-group-item"><i class="fa fa-television"></i> Kategori</a>
-                        <a href="#" class="list-group-item"><i class="fa fa-television"></i> Kategori</a>
-                        <a href="#" class="list-group-item"><i class="fa fa-television"></i> Kategori</a>
-                        <a href="#" class="list-group-item"><i class="fa fa-television"></i> Kategori</a>
-                        <a href="#" class="list-group-item"><i class="fa fa-television"></i> Kategori</a>
+
+                        @foreach($categories as $category)
+                        <a href="{{ route('category', $category->slug) }}" class="list-group-item">
+                            <i class="fa fa-arrow-circle-o-right"></i>
+                            {{ $category->name }}
+                        </a>
+                        @endforeach
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
                     <ol class="carousel-indicators">
-                        <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                        <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-                        <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                        @for($i=0; $i<count($slider_products); $i++)
+                        <li data-target="#carousel-example-generic" data-slide-to="{{ $i }}" class="{{ $i==0 ? 'active' : ''}}"></li>
+                        @endfor
                     </ol>
                     <div class="carousel-inner" role="listbox">
-                        <div class="item active">
-                            <img src="img/slide1.jpg" alt="...">
+                        @foreach($slider_products as $index=> $product)
+                        <div class="item {{$index == 0 ? 'active' : ''}}">
+                            <img src="http://via.placeholder.com/640x400?text=ProductImage" alt="...">
                             <div class="carousel-caption">
-                                Slide 1
+                                {{$product->name}}
                             </div>
                         </div>
-                        <div class="item">
-                            <img src="img/slide2.jpg" alt="...">
-                            <div class="carousel-caption">
-                                Slide 2
-                            </div>
-                        </div>
-                        <div class="item">
-                            <img src="img/slide3.jpg" alt="...">
-                            <div class="carousel-caption">
-                                Slide 3
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
                     <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
                         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
@@ -59,10 +47,13 @@
             </div>
             <div class="col-md-3">
                 <div class="panel panel-default" id="sidebar-product">
-                    <div class="panel-heading">Günün Fırsatı</div>
+                    <div class="panel-heading">Opportunity Of The Day</div>
                     <div class="panel-body">
-                        <a href="#">
-                            <img src="img/product1.jpg" class="img-responsive">
+                        <a href="{{ route('product', $opp_day->slug) }}">
+                            <img src="{{$opp_day->detail->product_img!=null ? asset('/uploads/products/' .$opp_day->detail->product_img) :
+                                'http://via.placeholder.com/400x485?text=ProductImage'}}"
+                                 style="min-width: 100%;" class="img-responsive">
+                            {{ $opp_day->name }}
                         </a>
                     </div>
                 </div>
@@ -75,26 +66,19 @@
                 <div class="panel-heading">Öne Çıkan Ürünler</div>
                 <div class="panel-body">
                     <div class="row">
+                        @foreach($stand_out as $product)
                         <div class="col-md-3 product">
-                            <a href="#"><img src="img/product1.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
+                            <a href="{{ route('product', $product->slug) }}">
+                                <img src="{{$product->detail->product_img!=null ? asset('/uploads/products/' .$product->detail->product_img) :
+                                'http://via.placeholder.com/400x400?text=ProductImage'}}"
+                                     style="min-width: 100%;" class="img-responsive">
+                            </a>
+                            <p>
+                                <a href="{{ route('product', $product->slug) }}">{{ $product->name }}</a>
+                            </p>
+                            <p class="price">{{ $product->price }} ₺</p>
                         </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product2.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product3.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product4.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -105,26 +89,19 @@
                 <div class="panel-heading">Çok Satan Ürünler</div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product1.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product2.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product3.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product4.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
+                        @foreach($selling_lot as $product)
+                            <div class="col-md-3 product">
+                                <a href="{{ route('product', $product->slug) }}">
+                                    <img src="{{$product->detail->product_img!=null ? asset('/uploads/products/' .$product->detail->product_img) :
+                                'http://via.placeholder.com/400x400?text=ProductImage'}}"
+                                         style="min-width: 100%;" class="img-responsive">
+                                </a>
+                                <p>
+                                    <a href="{{ route('product', $product->slug) }}">{{ $product->name }}</a>
+                                </p>
+                                <p class="price">{{ $product->price }} ₺</p>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -134,26 +111,19 @@
                 <div class="panel-heading">İndirimli Ürünler</div>
                 <div class="panel-body">
                     <div class="row">
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product1.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product2.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product3.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="img/product4.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                        </div>
+                        @foreach($show_sales as $product)
+                            <div class="col-md-3 product">
+                                <a href="{{ route('product', $product->slug) }}">
+                                    <img src="{{$product->detail->product_img!=null ? asset('/uploads/products/' .$product->detail->product_img) :
+                                'http://via.placeholder.com/400x400?text=ProductImage'}}"
+                                         style="min-width: 100%;" class="img-responsive">
+                                </a>
+                                <p>
+                                    <a href="{{ route('product', $product->slug) }}">{{ $product->name }}</a>
+                                </p>
+                                <p class="price">{{ $product->price }} ₺</p>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>

@@ -1,75 +1,57 @@
 @extends('layouts.master')
-@section ('title','Category')
+@section ('title',$category->name)
 @section ('content')
     <div class="container">
         <ol class="breadcrumb">
-            <li><a href="#">Anasayfa</a></li>
-            <li><a href="#">Kategori</a></li>
-            <li class="active">Kategori</li>
+            <li><a href="{{ route('home') }}">Home</a></li>
+            <li><a href="#">{{ $category->name }}</a></li>
         </ol>
         <div class="row">
             <div class="col-md-3">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Kategori Adı</div>
+                    <div class="panel-heading">{{ $category->name }}</div>
                     <div class="panel-body">
-                        <h3>Alt Kategoriler</h3>
-                        <div class="list-group categories">
-                            <a href="#" class="list-group-item"><i class="fa fa-television"></i> Alt Kategori</a>
-                            <a href="#" class="list-group-item"><i class="fa fa-television"></i> Alt Kategori</a>
-                            <a href="#" class="list-group-item"><i class="fa fa-television"></i> Alt Kategori</a>
-                        </div>
-                        <h3 class="mt-3">Fiyat Aralığı</h3>
-                        <form>
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> 100-200
-                                    </label>
-                                </div>
+                        @if(count($subCategories)>0)
+                            <h3>Alt Kategoriler</h3>
+                            <div class="list-group categories">
+                                @foreach($subCategories as $sub)
+                                    <a href="{{ route('category', $sub->slug ) }}" class="list-group-item"><i class="fa fa-television"></i> {{ $sub->name }}</a>
+                                @endforeach
                             </div>
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"> 200-300
-                                    </label>
-                                </div>
-                            </div>
-                        </form>
+                        @else
+                        Bu kategoriyada alt kategoriya yoxdur.
+                        @endif
                     </div>
                 </div>
             </div>
             <div class="col-md-9">
                 <div class="products bg-content">
+                    @if(count($products)>0)
                     Sırala
-                    <a href="#" class="btn btn-default">Çok Satanlar</a>
-                    <a href="#" class="btn btn-default">Yeni Ürünler</a>
+                    <a href="?order=sellinglot" class="btn btn-default">Çok Satanlar</a>
+                    <a href="?order=newproducts" class="btn btn-default">Yeni Ürünler</a>
                     <hr>
+                    @endif
+                    @if(count($products)==0)
+                       <div class="text-danger">Bu kategoriyaya aid mehsul daxil edilmeyib.</div>
+                    @endif
                     <div class="row">
+{{--                        img/product1.jpg--}}
+                        @foreach($products as $product)
                         <div class="col-md-3 product">
-                            <a href="#"><img src="/img/product1.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                            <p><a href="#" class="btn btn-theme">Sepete Ekle</a></p>
+                            <a href="{{ route('product', $product->slug ) }}"><img src="http://via.placeholder.com/400x400?text=ProductImage"></a>
+                            <p><a href="{{ route('product', $product->slug ) }}">{{ $product->name }}</a></p>
+                            <p class="price">{{ $product->price }} ₺</p>
+                            <form action="{{ route('cart.add') }}" method="post">
+                                {{ csrf_field() }}
+                                <input type="hidden" name="id" value="{{ $product->id }}">
+                                <input type="submit" class="btn btn-theme" value="Add To Cart">
+                            </form>
                         </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="/img/product2.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                            <p><a href="#" class="btn btn-theme">Sepete Ekle</a></p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="/img/product3.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                            <p><a href="#" class="btn btn-theme">Sepete Ekle</a></p>
-                        </div>
-                        <div class="col-md-3 product">
-                            <a href="#"><img src="/img/product4.jpg"></a>
-                            <p><a href="#">Ürün adı</a></p>
-                            <p class="price">129 ₺</p>
-                            <p><a href="#" class="btn btn-theme">Sepete Ekle</a></p>
-                        </div>
+                        @endforeach
                     </div>
+                    {{ request()->has('order') ? $products->appends(['order'=>request('order')])->links('pagination::bootstrap-4')
+                    : $products->links('pagination::bootstrap-4') }}
                 </div>
             </div>
         </div>

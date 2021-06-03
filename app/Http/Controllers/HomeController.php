@@ -2,21 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\Product;
 
 class HomeController extends Controller
 {
     public  function Index(){
-        $name="Afsana";
-        $surname="Qurbanova";
-        $names=["Efsane","Emin","Sabir","Ilkin"];
-        $users=[
-            ["id"=>1, "username" => "Efsane"],
-            ["id"=>2, "username" => "Emin"],
-            ["id"=>3, "username" => "Sabir"],
-            ["id"=>4, "username" => "Ferid"],
-            ["id"=>5, "username" => "Ramin"]
-        ];
-        return view('home',compact('name','surname','names', 'users'));
+
+        $categories = Category::WhereRaw('sup_categoryId is null')->take(8)->get();
+
+        //with Eager-Loading isini gorur. Yeni biz ProductDetailleri getirerken hem de butun productlari
+        //getirmis oluruq. Yeni database-e az sorgu gedir.
+        $slider_products=Product::select('product.*')
+            ->join('product_detail','product_detail.product_id','product.id')
+            ->where('show_slider',1)
+            ->orderby('updated_at')->take(4)->get();
+
+        //Join vasitesiyle 2 table-i elaqelendiririk.
+        $opp_day=Product::select('product.*')
+            ->join('product_detail','product_detail.product_id','product.id')
+            ->where('opportunity_day',1)
+            ->orderby('updated_at')->first();
+
+        $stand_out=Product::select('product.*')
+            ->join('product_detail','product_detail.product_id','product.id')
+            ->where('stand_out',1)
+            ->orderby('updated_at')->take(4)->get();
+
+        $selling_lot=Product::select('product.*')
+            ->join('product_detail','product_detail.product_id','product.id')
+            ->where('selling_lot',1)
+            ->orderby('updated_at')->take(4)->get();
+
+        $show_sales=Product::select('product.*')
+            ->join('product_detail','product_detail.product_id','product.id')
+            ->where('show_sales',1)
+            ->orderby('updated_at')->take(4)->get();
+
+        return view('home', compact('categories', 'slider_products','opp_day', 'stand_out', 'selling_lot', 'show_sales'));
     }
 }
