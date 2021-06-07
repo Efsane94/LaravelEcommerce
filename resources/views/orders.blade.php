@@ -3,30 +3,30 @@
 @section('content')
     <div class="container">
         <div class="bg-content">
-            <h2>Siparişler</h2>
-            <p>Henüz siparişiniz yok</p>
+            <h2>Orders</h2>
+            @if($orders->count()==0)
+            <p>Don't have any orders yet.</p>
+                @else
+
             <table class="table table-bordererd table-hover">
                 <tr>
-                    <th>Sipariş Kodu</th>
-                    <th>Sipariş Tarihi</th>
-                    <th>KDV</th>
-                    <th>Kargo</th>
-                    <th>Toplam Tutar</th>
-                    <th>Durum</th>
-                    <th>İşlem</th>
+                    <th>Order number</th>
+                    <th>Total</th>
+                    <th>Product Count</th>
+                    <th>Status</th>
+                    <th></th>
                 </tr>
+                @foreach($orders as $order)
                 <tr>
-                    <td>SP-00123</td>
-                    <td>25.09.2017</td>
-                    <td>2.99</td>
-                    <td>0</td>
-                    <td>18.99</td>
-                    <td>
-                        Sipariş alındı, <br> Onaylandı, <br> Kargoya verildi, <br> Bir sorun var. İletişime geçin!
-                    </td>
-                    <td><a href="#" class="btn btn-sm btn-success">Detay</a></td>
+                    <td>{{ $order->id }}</td>
+                    <td>{{ $order->order_total * ((100+config('cart.tax')) /100)}}</td>
+                    <td>{{ $order->cart->cart_product_count() }}</td>
+                    <td>{{ $order->status }}</td>
+                    <td><a href="{{ route('order',$order->id) }}" class="btn btn-sm btn-success">Detail</a></td>
                 </tr>
+                @endforeach
             </table>
+            @endif
         </div>
     </div>
 @endsection

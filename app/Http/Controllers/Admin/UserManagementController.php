@@ -10,6 +10,11 @@ use Hash;
 use Auth;
 class UserManagementController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('admin');
+    }
+
     public function index(){
         if(!empty(request('wanted')))
         {

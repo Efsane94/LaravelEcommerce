@@ -11,6 +11,11 @@ use Illuminate\Support\Str;
 
 class ProductManagementController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('admin');
+    }
+
     public function index(){
         if(!empty(request('wanted')))
         {

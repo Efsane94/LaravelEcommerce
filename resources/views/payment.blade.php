@@ -3,14 +3,15 @@
 @section ('content')
     <div class="container">
         <div class="bg-content">
-            <h2>Ödeme</h2>
-            <form action="{{ route('pay') }}" method="post">
+            <h2>Payment</h2>
+            <form method="POST" action="{{ route('repayment') }}">
+                {{ csrf_field() }}
             <div class="row">
                 <div class="col-md-5">
                     <h3>Payment Detail</h3>
                     <div class="form-group">
-                        <label id="card_no" for="kartno">Credit Card Number</label>
-                        <input type="text" class="form-control kredikarti" id="card_no" name="card_no" style="font-size:20px;" required>
+                        <label id="card_no" for="card_number">Credit Card Number</label>
+                        <input type="text" class="form-control kredikarti" id="card_number" name="card_number" style="font-size:20px;" required>
                     </div>
                     <div class="form-group">
                         <label id="expired_date_month" for="cardexpiredatemonth">Expired Date</label>
@@ -81,7 +82,7 @@
                     </div>
                 </div>
             </div>
-            <</form>
+            </form>
         </div>
     </div>
 @endsection

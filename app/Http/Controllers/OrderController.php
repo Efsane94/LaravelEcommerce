@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Order;
 
 class OrderController extends Controller
 {
@@ -11,11 +12,22 @@ class OrderController extends Controller
         $this->middleware('auth');
     }
     public function Index(){
-        return view("orders");
+        $orders=Order::with('cart')
+            ->whereHas('cart',function ($query){
+                $query->where('user_id',auth()->id());
+            })
+            ->orderbydesc('created_at')->get();
+
+        return view("orders",compact('orders'));
     }
 
     public function Details($id){
-        return view("orderdetails");
+        $order=Order::with('cart.cart_products.product')
+            ->whereHas('cart',function ($query){
+                $query->where('user_id',auth()->id());
+            })->where('order.id',$id)->firstOrFail();
+
+        return view("orderdetails",compact('order'));
     }
 
 }

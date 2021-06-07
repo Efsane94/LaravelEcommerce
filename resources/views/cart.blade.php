@@ -71,7 +71,7 @@
                         {{ method_field('DELETE') }}
                         <input type="submit" class="btn btn-info pull-left" value="Empty the Basket">
                     </form>
-                    <a href="{{ route('payment') }}" class="btn btn-success pull-right btn-lg">Ödeme Yap</a>
+                    <a href="{{ route('payment') }}" class="btn btn-success pull-right btn-lg">Pay</a>
                 </div>
             @else
                 <p>There are no items in your cart</p>

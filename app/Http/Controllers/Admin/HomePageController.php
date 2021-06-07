@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class HomePageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('admin');
+    }
+
     public function index(){
         return view('admin.home');
     }

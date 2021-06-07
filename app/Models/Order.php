@@ -13,7 +13,8 @@ class Order extends Model
 
     protected  $table='order';
 
-    protected $fillable=['cart_id','order_total','card', 'installment_number', 'status'];
+    protected $fillable=['cart_id','order_total','username','address','phone','card',
+        'installment_count', 'status'];
 
     public function cart()
     {

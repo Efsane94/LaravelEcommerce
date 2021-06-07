@@ -105,8 +105,13 @@ class UserController extends Controller
 
         if(auth()->attempt(['email'=>request('email'), 'password'=>request('password')],request()->has('remember_me'))) {
             request()->session()->regenerate();
-            $active_cart_id=\App\Models\Cart::firstOrCreate(['user_id'=>auth()->id()])->id;
-            session()->put('active_cart_id',$active_cart_id);
+            $active_cart_id=\App\Models\Cart::active_cart_id();
+
+            if(is_null($active_cart_id)){
+                $active_cart= \App\Models\Cart::create(['user_id'=>auth()->id()]);
+                $active_cart_id=$active_cart->id;
+
+            }
 
 //            Database-de bu istifadeciye aid cart melumatlari varsa update olunur, yoxdursa yenisi
 //            yaradilir.

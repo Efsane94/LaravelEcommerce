@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Cart;
 class PaymentController extends Controller
@@ -25,14 +26,21 @@ class PaymentController extends Controller
         return view("payment", compact('user_detail'));
     }
 
-//    public function Pay(){
-//        $order=request()->all();
-//        $order['cart_id']=session('active_cart_id');
-//        $order['bank']='Garanty';
-//        $order['installment_number']=1;
-//        $order['status']='Your order has been received';
-//        $order['total']=Cart::subtotal();
-//
-//        return view();
-//    }
+    public function Repayment()
+    {
+        $order=request()->all();
+        $order['cart_id']=session('active_cart_id');
+        $order['card']='Garanty';
+        $order['installment_count']=1;
+        $order['status']='Your order has been received';
+        $order['order_total']=Cart::subtotal();
+
+        Order::create($order);
+        Cart::destroy();
+        session()->forget('active_cart_id');
+
+        return redirect()->route('orders')
+            ->with('message_type','success')
+            ->with('message','Your order has been registered');
+    }
 }

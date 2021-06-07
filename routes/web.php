@@ -13,7 +13,9 @@ use App\Http\Controllers\Admin\HomePageController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\CategoryManagementController;
 use App\Http\Controllers\Admin\ProductManagementController;
+use App\Http\Controllers\Admin\OrderManagementController;
 use App\Http\Middleware\AdminMV;
+use App\Models\User;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,21 +35,22 @@ Route::group(['prefix'=>'admin', 'namespace'=>'Admin'],function() {
     Route::middleware([AdminMV::class])->group( function() {
         Route::get('/homepage', [HomePageController::class, 'index'])->name('admin.homepage');
         });
-        Route::group(['prefix'=>'usermanagement'],function(){
+
+    Route::group(['prefix'=>'usermanagement'],function(){
             Route::match(['get','post'],'/', [UserManagementController::class, 'index'])->name("admin.usermanagement");
             Route::get('/create', [UserManagementController::class, 'form'])->name("admin.usermanagement.create");
             Route::get('/update/{id}', [UserManagementController::class, 'form'])->name("admin.usermanagement.update");
             Route::post('/save/{id?}', [UserManagementController::class, 'save'])->name("admin.usermanagement.save");
             Route::get('/delete/{id}', [UserManagementController::class, 'delete'])->name("admin.usermanagement.delete");
         });
-
-        Route::group(['prefix'=>'category'],function(){
+    Route::group(['prefix'=>'category'],function(){
             Route::match(['get','post'],'/', [CategoryManagementController::class, 'index'])->name("admin.category");
             Route::get('/create', [CategoryManagementController::class, 'form'])->name("admin.category.create");
             Route::get('/update/{id}', [CategoryManagementController::class, 'form'])->name("admin.category.update");
             Route::post('/save/{id?}', [CategoryManagementController::class, 'save'])->name("admin.category.save");
             Route::get('/delete/{id}', [CategoryManagementController::class, 'delete'])->name("admin.category.delete");
         });
+
     Route::group(['prefix'=>'product'],function(){
         Route::match(['get','post'],'/', [ProductManagementController::class, 'index'])->name("admin.product");
         Route::get('/create', [ProductManagementController::class, 'form'])->name("admin.product.create");
@@ -55,7 +58,15 @@ Route::group(['prefix'=>'admin', 'namespace'=>'Admin'],function() {
         Route::post('/save/{id?}', [ProductManagementController::class, 'save'])->name("admin.product.save");
         Route::get('/delete/{id}', [ProductManagementController::class, 'delete'])->name("admin.product.delete");
     });
+
+    Route::group(['prefix'=>'order'],function(){
+        Route::match(['get','post'],'/', [OrderManagementController::class, 'index'])->name("admin.order");
+        Route::get('/create', [OrderManagementController::class, 'form'])->name("admin.order.create");
+        Route::get('/update/{id}', [OrderManagementController::class, 'form'])->name("admin.order.update");
+        Route::post('/save/{id?}', [OrderManagementController::class, 'save'])->name("admin.order.save");
+        Route::get('/delete/{id}', [OrderManagementController::class, 'delete'])->name("admin.order.delete");
     });
+});
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/category/{slug}', [CategoryController::class, 'index'])->name("category");
@@ -75,7 +86,7 @@ Route::group(['prefix'=>'cart'], function(){
 });
 
 Route::get('/payment', [PaymentController::class, 'index'])->name("payment");
-Route::post('/pay', [PaymentController::class, 'pay'])->name("pay");
+Route::post('/payment', [PaymentController::class, 'repayment'])->name("repayment");
 
 Route::group(['middleware'=>'auth'], function(){
     Route::get('/order', [OrderController::class, 'index'])->name("orders");
@@ -91,7 +102,3 @@ Route::group(['prefix'=>'user'],function(){
     Route::post('/logout', [UserController::class, 'logout'])->name('user.logout');
 });
 
-//Route::get('/test/mail', function(){
-//    $user=\App\Models\UserManagement::find(1);
-//    return new App\Mail\UserConfirmationMail($user);
-//});

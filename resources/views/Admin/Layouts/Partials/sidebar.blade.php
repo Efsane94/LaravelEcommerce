@@ -17,4 +17,8 @@
         <span class="fa fa-fw fa-dashboard"></span> Users
         <span class="badge badge-dark badge-pill pull-right"></span>
     </a>
+    <a href="{{ route('admin.order') }}" class="list-group-item">
+        <span class="fa fa-fw fa-dashboard"></span> Orders
+        <span class="badge badge-dark badge-pill pull-right"></span>
+    </a>
 </div>

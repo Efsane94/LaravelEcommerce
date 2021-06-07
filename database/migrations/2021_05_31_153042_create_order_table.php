@@ -16,11 +16,14 @@ class CreateOrderTable extends Migration
         Schema::create('order', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('cart_id')->unsigned();
-            $table->decimal('order_total',5,4);
+            $table->decimal('order_total',10,4);
             $table->string('status',30)->nullable();
 
+            $table->string('username',50);
+            $table->string('address',200);
+            $table->string('phone',15);
             $table->string('card',20);
-            $table->string('installment_number')->nullable();
+            $table->string('installment_count')->nullable();
 
             $table->softDeletes();
             $table->timestamps();

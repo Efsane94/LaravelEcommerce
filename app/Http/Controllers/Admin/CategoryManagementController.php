@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 class CategoryManagementController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('admin');
+    }
+
     public function index(){
         if(request()->filled('wanted') || request()->filled('sup_id'))
         {
